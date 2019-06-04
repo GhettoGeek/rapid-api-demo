@@ -4,7 +4,7 @@ import controller from './controller'
 const router = express.Router()
 
 // export function
-module.exports = function() {
+export default function() {
   router.route('/')
     .get(controller.getAll)
     .post(controller.post)

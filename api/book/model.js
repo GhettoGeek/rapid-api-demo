@@ -3,7 +3,7 @@ import startCase from 'lodash/startCase'
 import toLower from 'lodash/toLower'
 
 // export function
-module.exports = mongoose.model('Book', new mongoose.Schema({
+export default mongoose.model('Book', new mongoose.Schema({
   // title
   title: {
     type: String,

@@ -7,7 +7,7 @@ const router = express.Router()
 import book from './book'
 
 // export function
-module.exports = function() {
+export default function() {
   return router
     // router middlewares
     .use('/book', book())

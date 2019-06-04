@@ -4,7 +4,7 @@ import slug from 'limax'
 import Book from './model'
 
 // export function
-module.exports = {
+export default {
   // get all items
   getAll: function(req, res, next) {
     let query = {}
