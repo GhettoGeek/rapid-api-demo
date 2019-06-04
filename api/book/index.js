@@ -1,19 +1,17 @@
-// book router
 import express from 'express'
 import controller from './controller'
-const router = express.Router()
+const book = express.Router()
 
-// export function
 export default function() {
-  router.route('/')
+  book.route('/')
     .get(controller.getAll)
     .post(controller.post)
 
-  router.use('/:id', controller.find)
-  router.route('/:id')
+  book.use('/:id', controller.find)
+  book.route('/:id')
     .get(controller.get)
     .patch(controller.patch)
     .delete(controller.delete)
 
-  return router
+  return book
 }

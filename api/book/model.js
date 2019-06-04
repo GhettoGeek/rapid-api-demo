@@ -2,7 +2,6 @@ import mongoose from 'mongoose'
 import startCase from 'lodash/startCase'
 import toLower from 'lodash/toLower'
 
-// export function
 export default mongoose.model('Book', new mongoose.Schema({
   // title
   title: {

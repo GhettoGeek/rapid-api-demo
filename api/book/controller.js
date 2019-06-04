@@ -3,7 +3,6 @@ import omit from 'lodash/omit'
 import slug from 'limax'
 import Book from './model'
 
-// export function
 export default {
   // get all items
   getAll: function(req, res, next) {
