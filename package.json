@@ -1,15 +1,13 @@
 {
   "name": "rapid-api-demo",
   "version": "0.1.0",
-  "description": "Rapid JavaScript development environment for building RESTful API",
+  "description": "Rapid JavaScript development environment for building RESTful API (Demo)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nuotron/rapid-api-demo.git"
   },
   "keywords": [
-    "mvc",
     "feature-based",
-    "web-framework",
     "restful-api",
     "starter-kit",
     "boilerplate",
