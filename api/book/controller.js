@@ -1,24 +1,22 @@
-  self.handler(import errHandle from 'rapid-error-handler'
+import errHandle from 'rapid-error-handler'
 import omit from 'lodash/omit'
 import slug from 'limax'
 import Book from './model'
 
-export default function() {
-  let self = this
-
+class Ctrl {
   // get all items
-  self.getAll = function(req, res, next) {
+  getAll(req, res, next) {
     let query = {}
-    if(req.query.search) query = {title: new RegExp(self.escapeRegex(req.query.search), 'gi')}
+    if(req.query.search) query = {title: new RegExp(Ctrl.escapeRegex(req.query.search), 'gi')}
     else if(req.query.read) query.read = req.query.read
 
     Book.find(query, function(err, books) {
-      self.handler(err, next, function() {
+      Ctrl.handler(err, next, function() {
         res.send({
           total: books.length,
           books: books.map(function(book) {
-            let response = self.bookResponse(book)
-            response.request = self.bookUrl(req, book)
+            let response = Ctrl.bookResponse(book)
+            response.request = Ctrl.bookUrl(req, book)
             return response
           })
         })
@@ -27,14 +25,14 @@ export default function() {
   }
 
   // post new item
-  self.post = function(req, res, next) {
-    req.body = self.bookStrict(req.body)
+  post(req, res, next) {
+    req.body = Ctrl.bookStrict(req.body)
     let book = new Book(req.body)
-    let response = self.bookResponse(book)
-    response.request = self.bookUrl(req, book)
+    let response = Ctrl.bookResponse(book)
+    response.request = Ctrl.bookUrl(req, book)
 
     book.save(function(err) {
-      self.handler(err, next, function() {
+      Ctrl.handler(err, next, function() {
         res.status(201).send({
           status: 201,
           message: 'Book has added',
@@ -45,9 +43,9 @@ export default function() {
   }
 
   // find one item
-  self.find = function(req, res, next) {
+  find(req, res, next) {
     Book.findById(req.params.id, function(err, book) {
-      self.handler(err, next, function() {
+      Ctrl.handler(err, next, function() {
         if(book) {
           req.book = book
           next()
@@ -57,8 +55,8 @@ export default function() {
   }
 
   // get one item
-  self.get = function(req, res) {
-    let response = self.bookResponse(req.book)
+  get(req, res) {
+    let response = Ctrl.bookResponse(req.book)
     response.filterByRead = {
       type: 'GET',
       url: `http://${req.headers.host}/book?read=${response.read}`
@@ -67,25 +65,25 @@ export default function() {
   }
 
   // update an item
-  self.patch = function(req, res, next) {
-    req.body = self.bookStrict(req.body)
+  patch(req, res, next) {
+    req.body = Ctrl.bookStrict(req.body)
     for(let key in req.body) req.book[key] = req.body[key]
 
     req.book.save(function(err) {
-      self.handler(err, next, function() {
+      Ctrl.handler(err, next, function() {
         res.send({
           status: 200,
           message: 'Book has updated',
-          book: self.bookResponse(req.book)
+          book: Ctrl.bookResponse(req.book)
         })
       })
     })
   }
 
   // delete an item
-  self.delete = function(req, res, next) {
+  delete(req, res, next) {
     req.book.remove(function(err) {
-      self.handler(err, next, function() {
+      Ctrl.handler(err, next, function() {
         res.send({
           status: 200,
           message: 'Book has removed'
@@ -94,15 +92,14 @@ export default function() {
     })
   }
 
-
   // handler function
-  self.handler = function(err, next, callback) {
+  static handler(err, next, callback) {
     if(err) next(new errHandle.BadRequest(err))
     else callback()
   }
 
   // book response function
-  self.bookResponse = function(book) {
+  static bookResponse(book) {
     return {
       _id: book._id,
       title: book.title,
@@ -115,7 +112,7 @@ export default function() {
   }
 
   // book url function
-  self.bookUrl = function(req, book) {
+  static bookUrl(req, book) {
     return {
       type: 'GET',
       url: `http://${req.headers.host}/book/${book._id}`
@@ -123,23 +120,16 @@ export default function() {
   }
 
   // book strict function
-  self.bookStrict = function(body) {
+  static bookStrict(body) {
     body = omit(body, 'slug')
     if(body.title) body.slug = slug(body.title)
     return omit(body, ['_id', 'createdAt', 'updatedAt', '__v'])
   }
 
   // escape regex function
-  self.escapeRegex = function(text) {
+  static escapeRegex(text) {
     return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
   }
-
-  return {
-    getAll: self.getAll,
-    post: self.post,
-    find: self.find,
-    get: self.get,
-    patch: self.patch,
-    delete: self.delete
-  }
 }
+
+export default new Ctrl
