@@ -64,7 +64,7 @@ class Ctrl {
     res.send({book: response})
   }
 
-  // update an item
+  // patch an item
   patch(req, res, next) {
     req.body = Ctrl.bookStrict(req.body)
     for(let key in req.body) req.book[key] = req.body[key]
@@ -92,13 +92,13 @@ class Ctrl {
     })
   }
 
-  // handler function
+  // handler
   static handler(err, next, callback) {
     if(err) next(new errHandle.BadRequest(err))
     else callback()
   }
 
-  // book response function
+  // book response
   static bookResponse(book) {
     return {
       _id: book._id,
@@ -111,7 +111,7 @@ class Ctrl {
     }
   }
 
-  // book url function
+  // book url
   static bookUrl(req, book) {
     return {
       type: 'GET',
@@ -119,14 +119,14 @@ class Ctrl {
     }
   }
 
-  // book strict function
+  // book strict
   static bookStrict(body) {
     body = omit(body, 'slug')
     if(body.title) body.slug = slug(body.title)
     return omit(body, ['_id', 'createdAt', 'updatedAt', '__v'])
   }
 
-  // escape regex function
+  // escape regex
   static escapeRegex(text) {
     return text.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&')
   }
